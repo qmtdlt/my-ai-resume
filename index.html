@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="极简、高信息密度的面向 AI 个人简介（ResumeForAI）。" />
+  <title>面向 AI 的个人简介</title>
+  <style>
+    :root {
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --text: #18181b;
+      --text-muted: #52525b;
+      --border: #e4e4e7;
+      --accent: #18181b;
+      --accent-soft: #f4f4f5;
+      --code-bg: #f4f4f5;
+      --quote-bg: #fafafa;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.04);
+      --radius: 14px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0c0c0e;
+        --surface: #141417;
+        --text: #f4f4f5;
+        --text-muted: #a1a1aa;
+        --border: #27272a;
+        --accent: #f4f4f5;
+        --accent-soft: #1f1f23;
+        --code-bg: #1e1e22;
+        --quote-bg: #18181c;
+        --shadow: 0 1px 2px rgba(0, 0, 0, 0.25), 0 12px 32px rgba(0, 0, 0, 0.35);
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #0c0c0e;
+      --surface: #141417;
+      --text: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --border: #27272a;
+      --accent: #f4f4f5;
+      --accent-soft: #1f1f23;
+      --code-bg: #1e1e22;
+      --quote-bg: #18181c;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.25), 0 12px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 32px 16px 64px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Hiragino Sans GB", "Microsoft YaHei", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 15.5px;
+      line-height: 1.72;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+      padding: 0 4px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 0.01em;
+    }
+
+    .actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.4;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: opacity 0.15s ease, transform 0.1s ease, background-color 0.15s ease;
+    }
+
+    .btn:hover {
+      background: var(--accent-soft);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent);
+      opacity: 0.88;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 36px 40px;
+    }
+
+    .card h1 {
+      margin: 0 0 12px;
+      font-size: 1.65rem;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+    }
+
+    .card h2 {
+      margin: 28px 0 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+      font-size: 1.08rem;
+      line-height: 1.4;
+      letter-spacing: -0.01em;
+    }
+
+    .card h3 {
+      margin: 18px 0 8px;
+      font-size: 0.98rem;
+    }
+
+    .card p {
+      margin: 0 0 12px;
+    }
+
+    .card blockquote {
+      margin: 0 0 20px;
+      padding: 10px 14px;
+      border-left: 3px solid var(--border);
+      background: var(--quote-bg);
+      color: var(--text-muted);
+      border-radius: 0 8px 8px 0;
+      font-size: 14px;
+    }
+
+    .card blockquote p:last-child {
+      margin-bottom: 0;
+    }
+
+    .card ul,
+    .card ol {
+      margin: 0 0 14px;
+      padding-left: 1.35em;
+    }
+
+    .card li {
+      margin: 6px 0;
+    }
+
+    .card li > ul,
+    .card li > ol {
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+
+    .card code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.88em;
+      padding: 1px 5px;
+      border-radius: 5px;
+      background: var(--code-bg);
+    }
+
+    .card pre {
+      overflow-x: auto;
+      padding: 14px 16px;
+      border-radius: 10px;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      font-size: 13.5px;
+      line-height: 1.55;
+    }
+
+    .card pre code {
+      padding: 0;
+      background: transparent;
+    }
+
+    .card a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .card hr {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 24px 0;
+    }
+
+    .footer {
+      margin-top: 18px;
+      padding: 0 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+
+    .footer a {
+      color: inherit;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 18px 12px 44px;
+        font-size: 15px;
+      }
+      .card {
+        padding: 24px 20px;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        color: #000;
+        padding: 0;
+      }
+      .toolbar,
+      .footer {
+        display: none;
+      }
+      .card {
+        border: 0;
+        box-shadow: none;
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="toolbar">
+      <div class="brand">
+        <span class="badge">ResumeForAI</span>
+        <span>约 668 字 · 面向 AI 协作</span>
+      </div>
+      <div class="actions">
+        <button id="copy-btn" class="btn btn-primary" type="button">Copy for AI</button>
+        <a class="btn" href="./profile.md" target="_blank" rel="noopener">Raw .md</a>
+        <button id="theme-btn" class="btn" type="button" aria-label="Toggle theme">Theme</button>
+      </div>
+    </header>
+
+    <main class="card" id="profile-content">
+      <h1>面向 AI 的个人简介</h1>
+      <blockquote><p>用途：仅供 AI 协作校准上下文（非求职简历），与全局沟通规范配合使用。最后更新：2026-11</p></blockquote>
+      <h2>1. 身份与场景</h2>
+      <ul>
+<li><strong>角色</strong>：外包开发者，常接既有项目并把客户改动落实到代码里。
+</li>
+<li><strong>常见卡点</strong>：一是业务陌生（代码能写，但没理解谁用、卡在哪、为什么改）；二是技术栈陌生（借助 AI 跨栈开发，不熟新栈底层机制）。
+</li></ul>
+      <h2>2. 能力边界</h2>
+      <ul>
+<li><strong>最熟的应用实操区（类比锚点，偏应用实操而非深钻运行时/内核底层）</strong>：WinForms / WPF（MVVM、绑定、界面与消息循环）、ASP.NET / ASP.NET Core Web API、EF Core / Dapper / SQL Server &amp; MySQL 查询与事务、Qt 桌面端（信号槽、事件循环、QThread）、网络/串口/自定义二进制协议通讯、C++ 与 C# 互操作（DLL / C++/CLI / P/Invoke）。
+</li>
+<li><strong>接触过但不熟底层</strong>：传统 C/C++（原始指针、内存管理、结构体与位操作）、.NET/C++ 异步与多线程并发、Vue 前端联调；以及借助 AI 涉足的 iOS / SwiftUI、Java / Android、Rust、Tauri、Electron（做过项目，不熟底层原理与坑）。
+</li>
+<li><strong>明确不懂（盲区，不要假设我有直觉）</strong>：各类客户细分行业业务流程（医疗、财税、工控、ERP 等）；移动端原生底层与上架签名；现代前端工程化与 CSS/视觉设计；Rust 与 Tauri/Electron 底层机制；云原生与运维部署（Docker/K8s、Linux 深度排障、CI/CD、Serverless、HTTPS/反代）；网络安全与鉴权（OAuth/JWT/防刷）；AI/Agent 底层原理；产品设计、商业变现与增长运营。
+</li></ul>
+      <h2>3. 近期要做的事（了解 vs 陌生）</h2>
+      <ul>
+<li><em>按具体项目按需补全：进入真实项目时，如本节未记录该项目，请按第 4 节规则基于当前项目结构与我沟通“清楚 vs 不清楚”后追加。</em>
+</li></ul>
+      <h2>4. 提问与协作方式</h2>
+      <ul>
+<li><strong>进入具体真实项目时</strong>：若本简介未包含当前项目，先扫描项目代码与文档，拆出业务与技术模块，通过多选快速和我沟通“哪些清楚、哪些不清楚”，再展开工作并按需更新本简介。
+</li>
+<li><strong>遇到陌生业务</strong>：用一个具体例子讲清——谁在什么情况下做什么、卡在哪一步、改完后怎么完成同一件事；客户没交代的地方指出缺哪条信息；用到假设必须标明。
+</li>
+<li><strong>遇到陌生技术（按需 ELI5）</strong>：熟悉的应用实操部分直用术语；只把陌生的那一段讲简单，优先借用我熟悉的 .NET / 桌面端 / Qt / 数据库概念作类比。
+</li></ul>
+    </main>
+
+    <footer class="footer">
+      <span>Updated 2026-11</span>
+      <span>For AI Agents: fetch <a href="./profile.md">./profile.md</a> directly</span>
+    </footer>
+  </div>
+
+  <script id="raw-markdown" type="text/plain"># 面向 AI 的个人简介
+
+> 用途：仅供 AI 协作校准上下文（非求职简历），与全局沟通规范配合使用。最后更新：2026-11
+
+## 1. 身份与场景
+- **角色**：外包开发者，常接既有项目并把客户改动落实到代码里。
+- **常见卡点**：一是业务陌生（代码能写，但没理解谁用、卡在哪、为什么改）；二是技术栈陌生（借助 AI 跨栈开发，不熟新栈底层机制）。
+
+## 2. 能力边界
+- **最熟的应用实操区（类比锚点，偏应用实操而非深钻运行时/内核底层）**：WinForms / WPF（MVVM、绑定、界面与消息循环）、ASP.NET / ASP.NET Core Web API、EF Core / Dapper / SQL Server & MySQL 查询与事务、Qt 桌面端（信号槽、事件循环、QThread）、网络/串口/自定义二进制协议通讯、C++ 与 C# 互操作（DLL / C++/CLI / P/Invoke）。
+- **接触过但不熟底层**：传统 C/C++（原始指针、内存管理、结构体与位操作）、.NET/C++ 异步与多线程并发、Vue 前端联调；以及借助 AI 涉足的 iOS / SwiftUI、Java / Android、Rust、Tauri、Electron（做过项目，不熟底层原理与坑）。
+- **明确不懂（盲区，不要假设我有直觉）**：各类客户细分行业业务流程（医疗、财税、工控、ERP 等）；移动端原生底层与上架签名；现代前端工程化与 CSS/视觉设计；Rust 与 Tauri/Electron 底层机制；云原生与运维部署（Docker/K8s、Linux 深度排障、CI/CD、Serverless、HTTPS/反代）；网络安全与鉴权（OAuth/JWT/防刷）；AI/Agent 底层原理；产品设计、商业变现与增长运营。
+
+## 3. 近期要做的事（了解 vs 陌生）
+- *按具体项目按需补全：进入真实项目时，如本节未记录该项目，请按第 4 节规则基于当前项目结构与我沟通“清楚 vs 不清楚”后追加。*
+
+## 4. 提问与协作方式
+- **进入具体真实项目时**：若本简介未包含当前项目，先扫描项目代码与文档，拆出业务与技术模块，通过多选快速和我沟通“哪些清楚、哪些不清楚”，再展开工作并按需更新本简介。
+- **遇到陌生业务**：用一个具体例子讲清——谁在什么情况下做什么、卡在哪一步、改完后怎么完成同一件事；客户没交代的地方指出缺哪条信息；用到假设必须标明。
+- **遇到陌生技术（按需 ELI5）**：熟悉的应用实操部分直用术语；只把陌生的那一段讲简单，优先借用我熟悉的 .NET / 桌面端 / Qt / 数据库概念作类比。
+</script>
+  <script>
+    (function () {
+      var copyBtn = document.getElementById("copy-btn");
+      var rawEl = document.getElementById("raw-markdown");
+      var themeBtn = document.getElementById("theme-btn");
+      var rawText = rawEl ? rawEl.textContent : "";
+
+      if (copyBtn) {
+        copyBtn.addEventListener("click", function () {
+          var onCopied = function () {
+            var prev = copyBtn.textContent;
+            copyBtn.textContent = "Copied!";
+            setTimeout(function () {
+              copyBtn.textContent = prev;
+            }, 1800);
+          };
+
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(rawText).then(onCopied).catch(fallbackCopy);
+          } else {
+            fallbackCopy();
+          }
+
+          function fallbackCopy() {
+            var area = document.createElement("textarea");
+            area.value = rawText;
+            area.style.position = "fixed";
+            area.style.opacity = "0";
+            document.body.appendChild(area);
+            area.select();
+            try {
+              document.execCommand("copy");
+              onCopied();
+            } finally {
+              document.body.removeChild(area);
+            }
+          }
+        });
+      }
+
+      if (themeBtn) {
+        var root = document.documentElement;
+        var saved = localStorage.getItem("resume-for-ai-theme");
+        if (saved === "dark" || saved === "light") {
+          root.setAttribute("data-theme", saved);
+        }
+        themeBtn.addEventListener("click", function () {
+          var current = root.getAttribute("data-theme");
+          var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+          var next = current
+            ? (current === "dark" ? "light" : "dark")
+            : (prefersDark ? "light" : "dark");
+          root.setAttribute("data-theme", next);
+          localStorage.setItem("resume-for-ai-theme", next);
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
